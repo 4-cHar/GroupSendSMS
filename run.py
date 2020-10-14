@@ -1,11 +1,14 @@
-import csv
-import os
+import csv, os, re, sys
 
 
 class Main:
     def __init__(self):
         self.file = csv.reader(open('template.csv', 'r'))
-        self.bfile = open('run.bat', 'w+', encoding='utf-8')
+        sel = sys.platform
+        if sel == "win32" or sel == "cygwin":
+            self.bfile = open('run.bat', 'w+', encoding='utf-8')
+        elif sel == "darwin" or sel == "linux":
+            self.bfile = open('run.sh', 'w+', encoding='utf-8')
 
     def run(self):
         for i, row in enumerate(self.file):
@@ -37,7 +40,14 @@ class Main:
         self.bfile.write("\n")
         self.bfile.close()
 
+    def do(self):
+        if os.path.exists('run.bat'):
+            val = os.system('run.bat')
+        else:
+            val = os.system('run.sh')
+
 
 if __name__ == '__main__':
     start = Main()
     start.run()
+    start.do()
